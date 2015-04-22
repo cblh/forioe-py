@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+
+{% block username %}
+{{ user['name'] }}
+{% end %}
+{% block pagename %}
+个人信息
+<small>
+	<i class="icon-double-angle-right"></i>
+	 初始化
+</small>
+{% end %}
+{% block content %}
+
+<div class="row-fluid">
+	<div class="span12">
+		<div class="widget-box">
+			<div class="widget-header widget-header-blue widget-header-flat">
+				<h4 class="lighter">填写个人信息</h4>
+			</div>
+
+			<div class="widget-body">
+				<div class="widget-main">
+					<div id="fuelux-wizard" class="row-fluid" data-target="#step-container">
+						<ul class="wizard-steps">
+							<li data-target="#step1" class="active">
+								<span class="step">1</span>
+								<span class="title">欢迎</span>
+							</li>
+
+
+							<li data-target="#step2">
+								<span class="step">2</span>
+								<span class="title">个人信息</span>
+							</li>
+
+							<li data-target="#step3">
+								<span class="step">3</span>
+								<span class="title">导师信息</span>
+							</li>
+						</ul>
+					</div>
+
+					<hr />
+					<div class="step-content row-fluid position-relative" id="step-container">
+						<div class="step-pane active" id="step1">
+							
+							<div class="center">
+								<h3 class="green">Welcome!</h3>
+								<h4>欢迎进入进度管理系统</h4>
+								<ol><li>请准确填写个人真实信息	</li><li>错误的导师信息将导致账户退出</li></ol>
+							</div>
+
+						</div>
+
+
+
+						<div class="step-pane" id="step2">
+						<h3 class="lighter block green">请如实填写下列信息</h3>
+
+							<form class="form-horizontal" id="validation-form" method="post" action="/init">
+							{% raw xsrf_form_html() %}
+							
+
+								<div class="hr hr-dotted"></div>
+
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">真实姓名:</label>
+
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<input type="text" id="name" name="name" class="col-xs-12 col-sm-8" />
+										</div>
+									</div>
+								</div>
+
+								<div class="space-2"></div>
+
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phonenum">手机号码:</label>
+
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<input type="text" id="phonenum" name="phonenum" class="col-xs-12 col-sm-8" />
+										</div>
+									</div>
+								</div>
+
+								<div class="space-2"></div>
+
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="stnum">学号:</label>
+
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<input type="text" id="stnum" name="stnum" 	class="col-xs-12 col-sm-8" />
+										</div>
+									</div>
+								</div>
+
+								<div class="space-2"></div>
+
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">个人邮箱:</label>
+
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<input type="email" id="email" name="email" class="col-xs-12 col-sm-8" />
+										</div>
+									</div>
+								</div>
+
+							</form>
+								
+						
+						</div>
+
+						<div class="step-pane" id="step3">
+						<h3 class="blue lighter">选择导师</h3>
+								<form class="form-horizontal" id="form2" method="post" action="/init">
+         			<div class="hr hr-dotted"></div>
+                   				<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="teachername">导师姓名:</label>
+
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<input type="text" name="teachername" id="teachername" class="col-xs-12 col-sm-6" />
+										</div>
+									</div>
+								</div>
+
+								<div class="space-2"></div>
+
+								<div class="form-group">
+									<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="teachernum">导师工号:</label>
+
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<input type="text" name="teachernum" id="teachernum" class="col-xs-12 col-sm-6" />
+										</div>
+									</div>
+								</div>
+								<div class="space-2"></div>
+               
+
+           						 </form>
+           						 <div class="center">
+						<div id='errorinfo' class="collapse alert alert-danger" ></div>
+					</div>
+							
+							
+						</div>
+					</div>
+
+					<hr />
+					<div class="row-fluid wizard-actions">
+						<button class="btn btn-prev">
+							<i class="icon-arrow-left"></i>
+							Prev
+						</button>
+
+						<button class="btn btn-success btn-next" data-last="提交">
+							Next
+							<i class="icon-arrow-right icon-on-right"></i>
+						</button>
+					</div>
+				</div><!-- /widget-main -->
+			</div><!-- /widget-body -->
+		</div>
+	</div>
+</div>
+{% end %}
+{% block specscripts %}
+
+		<script src="assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
+		<script src="assets/js/jquery.gritter.min.js"></script>
+		<script src="assets/js/bootbox.min.js"></script>
+		<script src="assets/js/jquery.slimscroll.min.js"></script>
+		<script src="assets/js/jquery.easy-pie-chart.min.js"></script>
+		<script src="assets/js/jquery.hotkeys.min.js"></script>
+		<script src="assets/js/bootstrap-wysiwyg.min.js"></script>
+		<script src="assets/js/select2.min.js"></script>
+		<script src="assets/js/date-time/bootstrap-datepicker.min.js"></script>
+		<script src="assets/js/fuelux/fuelux.spinner.min.js"></script>
+		<script src="assets/js/x-editable/bootstrap-editable.min.js"></script>
+		<script src="assets/js/x-editable/ace-editable.min.js"></script>
+		<script src="assets/js/jquery.maskedinput.min.js"></script>
+		<script src="assets/js/fuelux/fuelux.wizard.min.js"></script>
+		<script src="assets/js/jquery.validate.min.js"></script>
+		<script src="assets/js/additional-methods.min.js"></script>
+		<script src="assets/js/bootbox.min.js"></script>
+
+{% end %}
+
+{% block relascript %}
+
+
+		<script type="text/javascript">
+			jQuery(function($) {
+			
+				$('[data-rel=tooltip]').tooltip();
+			
+				$(".select2").css('width','200px').select2({allowClear:true})
+				.on('change', function(){
+					$(this).closest('form').validate().element($(this));
+				}); 
+			
+			
+				var $validation = true;
+				$('#fuelux-wizard').ace_wizard().on('change' , function(e, info){
+					if(info.step == 2 && $validation) {
+						if(!$('#validation-form').valid()) return false;
+					}
+				}).on('finished', function() {
+            form = $('#validation-form');
+
+            $.ajax({
+                type : 'POST',
+                url : form.attr('action'),
+                data : $("#form2, #validation-form").serialize(),
+                dataType : 'json',
+                cache : false,
+                success : function(result) {
+                	if (result.error == 1) {
+                        $('#errorinfo').html(result.msg);
+                        $('#errorinfo').show()
+                    } 
+                    else if (result.error == 2) {
+                    	$('#errorinfo').html(result.msg);
+                        $('#errorinfo').show()
+                        setTimeout(window.location.href = result.redirect, 20000)
+                    }
+                    else {
+                        window.location.href = result.msg
+                    }
+                }
+            });
+            return false;
+        }).on('stepclick', function(e){
+					//return false;//prevent clicking on steps
+				});
+			
+
+			
+				$(' #form2, #validation-form').validate({
+					errorElement: 'div',
+					errorClass: 'help-block',
+					focusInvalid: false,
+					rules: {
+						email: {
+							required: true,
+						},
+						name: {
+							required: true
+						},
+						phonenum: {
+							required: true
+						},
+						stnum: {
+							required: true
+						},
+						teachername: {
+							required: true
+						},
+						teachernum: {
+							required: true
+						},
+					},
+			
+					invalidHandler: function (event, validator) { //display error alert on form submit   
+						$('.alert-danger', $('.login-form')).show();
+					},
+			
+					highlight: function (e) {
+						$(e).closest('.form-group').removeClass('has-info').addClass('has-error');
+					},
+			
+					success: function (e) {
+						$(e).closest('.form-group').removeClass('has-error').addClass('has-info');
+						$(e).remove();
+					},
+			
+					errorPlacement: function (error, element) {
+						if(element.is(':checkbox') || element.is(':radio')) {
+							var controls = element.closest('div[class*="col-"]');
+							if(controls.find(':checkbox,:radio').length > 1) controls.append(error);
+							else error.insertAfter(element.nextAll('.lbl:eq(0)').eq(0));
+						}
+						else if(element.is('.select2')) {
+							error.insertAfter(element.siblings('[class*="select2-container"]:eq(0)'));
+						}
+						else if(element.is('.chosen-select')) {
+							error.insertAfter(element.siblings('[class*="chosen-container"]:eq(0)'));
+						}
+						else error.insertAfter(element.parent());
+					},
+			
+					submitHandler: function (form) {
+					},
+					invalidHandler: function (form) {
+					}
+				});
+			
+				
+				
+				
+				$('#modal-wizard .modal-header').ace_wizard();
+				$('#modal-wizard .wizard-actions .btn[data-dismiss=modal]').removeAttr('disabled');
+			})
+
+        //页面表单数据提交的时候
+        $(document).on('submit', '#form1', function() {
+            form = $(this);
+            $.ajax({
+                type : 'POST',
+                url : form.attr('action'),
+                data : form.serialize(),
+                dataType : 'json',
+                cache : false,
+                success : function(result) {
+                	if (result.error == 1) {
+                        form.find('#error').html(result.msg);
+                        form.find('#error').show()
+                    } else {
+                        window.location.href = result.msg
+                    }
+                }
+            });
+            return false;
+        });
+
+		</script>
+{% end %}

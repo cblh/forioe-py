@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block pagename %}
+个人信息
+<small>
+	<i class="icon-double-angle-right"></i>
+	 查看
+</small>
+{% end %}
+{% block content %}
+
+
+<div class="center">
+	<span class="btn btn-app btn-sm btn-light no-hover">
+		<span class="line-height-1 bigger-170 blue">{{ report}}</span>
+
+		<br>
+		<span class="line-height-1 smaller-90"> 次报告 </span>
+	</span>
+
+	<span class="btn btn-app btn-sm btn-yellow no-hover">
+		<span class="line-height-1 bigger-170">{{ response }}</span>
+
+		<br>
+		<span class="line-height-1 smaller-90"> 次评论 </span>
+	</span>
+	{% if user['status'] == '2'%}
+	<span class="btn btn-app btn-sm btn-pink no-hover">
+		<span class="line-height-1 bigger-170"> {% if user['delay_count'] %}{{ user['delay_count']}}{%else%}0{%end%} </span>
+
+		<br>
+		<span class="line-height-1 smaller-90"> 次延误 </span>
+	</span>
+	{% end %}
+
+	
+</div>
+<div class="profile-user-info profile-user-info-striped">
+	<div class="profile-info-row">
+		<div class="profile-info-name"> 用户名 </div>
+
+		<div class="profile-info-value">
+			<span class="editable editable-click" id="username">{{ user['name'] }}</span>
+		</div>
+	</div>
+
+	<div class="profile-info-row">
+		<div class="profile-info-name"> 真实姓名 </div>
+
+		<div class="profile-info-value">
+			<span class="editable editable-click" id="realname">{{ user['realname'] }}</span>
+		</div>
+	</div>
+
+	<div class="profile-info-row">
+		<div class="profile-info-name"> 学号/工号 </div>
+
+		<div class="profile-info-value">
+			<span class="editable editable-click" id="schoolnum"> {{ user['schoolnum'] }}</span>
+		</div>
+	</div>
+
+	<div class="profile-info-row">
+		<div class="profile-info-name"> 电话 </div>
+
+		<div class="profile-info-value">
+			<span class="editable editable-click" id="phonenum"> {{ user['phonenum'] }}</span>
+		</div>
+	</div>
+	{% if len(user['email']) > 3%}
+	<div class="profile-info-row">
+		<div class="profile-info-name"> 邮箱 </div>
+
+		<div class="profile-info-value">
+			<span class="editable editable-click" id="email"> {{ user['email'] }}</span>
+		</div>
+	</div>
+	{% end %}
+	{% if teacher %}
+	<div class="profile-info-row">
+		<div class="profile-info-name"> 指导老师 </div>
+
+		<div class="profile-info-value">
+			<span class="editable editable-click" id="login">{{ teacher['name'] }}</span>
+		</div>
+	</div>
+	{% end %}
+	<div class="profile-info-row">
+		<div class="profile-info-name"> 账户状态 </div>
+
+		<div class="profile-info-value">
+			<span class="editable editable-click" id="login">{% if user['status'] == '1' %}未通过验证{% elif user['status'] == '2' %}学生{% elif user['status'] == '3' %}老师{% end %}</span>
+		</div>
+	</div>
+
+	<div class="profile-info-row">
+		<div class="profile-info-name"> About Me </div>
+
+		<div class="profile-info-value">
+			<a data-toggle="collapse" data-parent="#accordion" 
+          href="#collapseThree">
+          修改密码
+        </a>
+		</div>
+	</div>
+</div>
+    <div id="collapseThree" class="panel-collapse collapse">
+    <div class="col-sm-6">
+      <div class="panel-body">
+     <div class="center">
+<form id="form1" method="post" action="/profile">
+     {% raw xsrf_form_html() %}
+         <div id='error' class="alert alert-danger collapse"></div>
+                    <div class="control-group">
+                    <div class="controls">
+                        <input type="text" disabled id="username" name="username" value="{{ user['name']}} "/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <input type="password" name="password" placeholder="请输入新密码"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <input type="password" name="confirm" placeholder="请确认新密码"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                      <button type="submit" class="btn btn-success">确认</button>
+                    </div>
+                </div>
+            </form>
+            </div>
+      </div>
+      </div>
+
+    </div>
+
+
+
+
+
+
+{% end %}
+{% block relascript %}
+<script>
+$(document).on('submit', '#form1', function() {
+            form = $(this);
+            $.ajax({
+                type : 'POST',
+                url : form.attr('action'),
+                data : form.serialize(),
+                dataType : 'json',
+                cache : false,
+                success : function(result) {
+                	if (result.error == 1) {
+                        form.find('#error').html(result.msg);
+                        form.find('#error').collapse('show');
+                    } else {
+                        window.location.href = result.msg
+                    }
+                }
+            });
+            return false;
+        });
+
+		</script>
+{% end %}

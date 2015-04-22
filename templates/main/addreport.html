@@ -1,0 +1,326 @@
+{% extends 'base.html' %}
+
+{% block pagename %}
+{% if user['status'] == '2'%}报告管理{%end%}
+{% if user['status'] == '3'%}反馈管理{%end%}
+<small>
+	<i class="icon-double-angle-right"></i>
+	 新建
+</small>
+{% end %}
+{% block content %}
+<form class="form-horizontal" id="editor-form" method="post" action="/addreport">
+{% raw xsrf_form_html() %}
+<div id='error' class="alert alert-danger collapse"></div>
+ {% if user['status'] == '3' %}
+<div class="form-group">
+
+		<div class="col-xs-12 col-sm-9">
+			<div class="clearfix">
+				回复给 <a href="/report/{{ data['id']}}"> {{ data['title']}}"</a>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+	
+		<div class="input-group">
+		<div class="col-xs-12 col-sm-2">
+		<label class="control-label col-xs-12 col-sm-12 no-padding-right" for="date">下次提交时间:</label>
+		</div>
+
+		<div class="col-xs-12 col-sm-5">
+		<div class="input-group">
+			<input name="last_request" 	class="form-control date-picker" id="id-date-picker-1" type="text" data-date-format="yyyy-mm-dd" />
+			<span class="input-group-addon">
+				<i class="icon-calendar bigger-110"></i>
+			</span>
+			</div>
+		</div>
+		<div class="col-xs-4">
+		<label class="control-label col-xs-4 col-sm-4 no-padding-right" for="remind">提醒TA</label>
+			<label>
+				<input name="remind" class="ace ace-switch ace-switch-5 col-xs-7 col-sm-7" type="checkbox">
+				<span class="lbl"></span>
+			</label>
+		</div>
+	</div>
+	</div>
+
+		<div class="hidden">
+			<div class="clearfix">
+				<input type="text" id="id" name="id" class="col-xs-12 col-sm-5"  value="{{ data['id']}}"/>
+			</div>
+		</div>
+		<div class="hidden">
+			<div class="clearfix">
+				<input type="text" id="title" name="title" class="col-xs-12 col-sm-5"  value="{{ data['title']}}"/>
+			</div>
+		</div>
+{% else %}
+	<div class="form-group">
+		<label class="control-label col-xs-12 col-sm-1 no-padding-right" for="title">标题:</label>
+
+		<div class="col-xs-12 col-sm-9">
+			<div class="clearfix">
+				<input type="text" id="title" name="title" class="col-xs-12 col-sm-5"/>
+			</div>
+		</div>
+	</div>
+{% end %}
+	<div class="space-2"></div>
+
+<div class="wysiwyg-editor" id="editor1"></div>
+
+<div class="hr hr-double dotted"></div>
+<textarea class="input-xlarge span7 hidden" name="content" id="textarea"></textarea>
+
+{% if user['status'] == '3'%}
+<div class="form-group">
+<div class="col-xs-12 col-sm-5">
+<button class="btn btn-xs btn-info" data-toggle="collapse" data-parent="#control" href="#modify{{stu['id']}}">
+<i class="icon-edit bigger-120"></i>设置进度信息
+</button>
+<div class="panel-collapse collapse" id="modify{{stu['id']}}" style="height: auto;">
+	<div class="panel-body">
+
+		<div class="space-10"></div>
+		<div class='row alert'>
+		<div class='col-md-3'>
+		进度调整:
+		</div>
+		<div class='col-md-8'>
+		<div class="knob-container inline">
+		<input type="text" name="process" class="input-small knob" value="{{stu['process']}}" data-min="0" data-max="100" data-step="10" data-width="80" data-height="80" data-thickness=".2" />
+	</div>
+		</div>
+		</div>
+		</div>
+</div>
+
+		</div>
+	</div>
+{% end %}
+<div class="form-group">
+<div class="col-xs-12 col-sm-5">
+<button id='submitbutton' class="btn btn-info" type="button" onclick="return geteditorcontent()">
+<i class="icon-ok bigger-110"></i>
+Submit
+</button>
+</div>
+</div>
+</form>
+<script type="text/javascript">
+	var $path_assets = "assets";//this will be used in loading jQuery UI if needed!
+</script>
+{% end %}
+{% block specscripts %}
+	<script src="../assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script src="../assets/js/jquery.ui.touch-punch.min.js"></script>
+		<script src="../assets/js/markdown/markdown.min.js"></script>
+		<script src="../assets/js/markdown/bootstrap-markdown.min.js"></script>
+		<script src="../assets/js/jquery.hotkeys.min.js"></script>
+		<script src="../assets/js/bootstrap-wysiwyg.min.js"></script>
+		<script src="../assets/js/bootbox.min.js"></script>
+		<script src="../assets/js/date-time/bootstrap-datepicker.min.js"></script>
+		<script src="../assets/js/date-time/bootstrap-timepicker.min.js"></script>
+		<script src="../assets/js/date-time/moment.min.js"></script>
+		<script src="../assets/js/date-time/daterangepicker.min.js"></script>
+		<script src="../assets/js/jquery.knob.min.js"></script>
+		{% end %}
+{% block relascript %}
+
+		<script type="text/javascript">
+
+
+
+			jQuery(function($){
+				$(".knob").knob();
+
+	$('.date-picker').datepicker({autoclose:true}).next().on(ace.click_event, function(){
+					$(this).prev().focus();
+				});
+				$('input[name=date-range-picker]').daterangepicker().prev().on(ace.click_event, function(){
+					$(this).next().focus();
+				});
+	function showErrorAlert (reason, detail) {
+		var msg='';
+		if (reason==='unsupported-file-type') { msg = "Unsupported format " +detail; }
+		else {
+			console.log("error uploading file", reason, detail);
+		}
+		$('<div class="alert"> <button type="button" class="close" data-dismiss="alert">&times;</button>'+ 
+		 '<strong>File upload error</strong> '+msg+' </div>').prependTo('#alerts');
+	}
+
+	//$('#editor1').ace_wysiwyg();//this will create the default editor will all buttons
+
+	//but we want to change a few buttons colors for the third style
+	$('#editor1').ace_wysiwyg({
+		toolbar:
+		[
+			'font',
+			null,
+			'fontSize',
+			null,
+			{name:'bold', className:'btn-info'},
+			{name:'italic', className:'btn-info'},
+			{name:'strikethrough', className:'btn-info'},
+			{name:'underline', className:'btn-info'},
+			null,
+			{name:'insertunorderedlist', className:'btn-success'},
+			{name:'insertorderedlist', className:'btn-success'},
+			{name:'outdent', className:'btn-purple'},
+			{name:'indent', className:'btn-purple'},
+			null,
+			{name:'justifyleft', className:'btn-primary'},
+			{name:'justifycenter', className:'btn-primary'},
+			{name:'justifyright', className:'btn-primary'},
+			{name:'justifyfull', className:'btn-inverse'},
+			null,
+			{name:'createLink', className:'btn-pink'},
+			{name:'unlink', className:'btn-pink'},
+			null,
+			{name:'insertImage', className:'btn-success'},
+			null,
+			'foreColor',
+			null,
+			{name:'undo', className:'btn-grey'},
+			{name:'redo', className:'btn-grey'}
+		],
+		'wysiwyg': {
+			fileUploadError: showErrorAlert
+		}
+	}).prev().addClass('wysiwyg-style2');
+
+	
+
+	$('#editor2').css({'height':'200px'}).ace_wysiwyg({
+		toolbar_place: function(toolbar) {
+			return $(this).closest('.widget-box').find('.widget-header').prepend(toolbar).children(0).addClass('inline');
+		},
+		toolbar:
+		[
+			'bold',
+			{name:'italic' , title:'Change Title!', icon: 'icon-leaf'},
+			'strikethrough',
+			null,
+			'insertunorderedlist',
+			'insertorderedlist',
+			null,
+			'justifyleft',
+			'justifycenter',
+			'justifyright'
+		],
+		speech_button:false
+	});
+
+
+	$('[data-toggle="buttons"] .btn').on('click', function(e){
+		var target = $(this).find('input[type=radio]');
+		var which = parseInt(target.val());
+		var toolbar = $('#editor1').prev().get(0);
+		if(which == 1 || which == 2 || which == 3) {
+			toolbar.className = toolbar.className.replace(/wysiwyg\-style(1|2)/g , '');
+			if(which == 1) $(toolbar).addClass('wysiwyg-style1');
+			else if(which == 2) $(toolbar).addClass('wysiwyg-style2');
+		}
+	});
+
+
+	
+
+	//Add Image Resize Functionality to Chrome and Safari
+	//webkit browsers don't have image resize functionality when content is editable
+	//so let's add something using jQuery UI resizable
+	//another option would be opening a dialog for user to enter dimensions.
+	if ( typeof jQuery.ui !== 'undefined' && /applewebkit/.test(navigator.userAgent.toLowerCase()) ) {
+		
+		var lastResizableImg = null;
+		function destroyResizable() {
+			if(lastResizableImg == null) return;
+			lastResizableImg.resizable( "destroy" );
+			lastResizableImg.removeData('resizable');
+			lastResizableImg = null;
+		}
+
+		var enableImageResize = function() {
+			$('.wysiwyg-editor')
+			.on('mousedown', function(e) {
+				var target = $(e.target);
+				if( e.target instanceof HTMLImageElement ) {
+					if( !target.data('resizable') ) {
+						target.resizable({
+							aspectRatio: e.target.width / e.target.height,
+						});
+						target.data('resizable', true);
+						
+						if( lastResizableImg != null ) {//disable previous resizable image
+							lastResizableImg.resizable( "destroy" );
+							lastResizableImg.removeData('resizable');
+						}
+						lastResizableImg = target;
+					}
+				}
+			})
+			.on('click', function(e) {
+				if( lastResizableImg != null && !(e.target instanceof HTMLImageElement) ) {
+					destroyResizable();
+				}
+			})
+			.on('keydown', function() {
+				destroyResizable();
+			});
+	    }
+		
+		enableImageResize();
+
+		/**
+		//or we can load the jQuery UI dynamically only if needed
+		if (typeof jQuery.ui !== 'undefined') enableImageResize();
+		else {//load jQuery UI if not loaded
+			$.getScript($path_assets+"/js/jquery-ui-1.10.3.custom.min.js", function(data, textStatus, jqxhr) {
+				if('ontouchend' in document) {//also load touch-punch for touch devices
+					$.getScript($path_assets+"/js/jquery.ui.touch-punch.min.js", function(data, textStatus, jqxhr) {
+						enableImageResize();
+					});
+				} else	enableImageResize();
+			});
+		}
+		*/
+	}
+
+
+});
+(function ($) {
+    form = $('#editor-form');
+
+    $('#submitbutton').click(function() {
+        
+        $.ajax({
+                type : 'POST',
+                url : form.attr('action'),
+                data : form.serialize(),
+                dataType : 'json',
+                cache : false,
+                success : function(result) {
+                    if (result.error == 1) {
+                        form.find('#error').html(result.msg);
+                        form.find('#error').collapse('show');
+                    } else {
+                        window.location.href = result.msg;
+                    }
+                }
+            });
+        return false
+    })
+})(jQuery);
+function geteditorcontent()
+{	
+	var content=document.getElementById("editor1").innerHTML;
+	document.getElementById("textarea").innerHTML=content;
+}
+
+
+
+		</script>
+{% end %}

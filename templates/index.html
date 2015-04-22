@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>进度管理系统</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+	<!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
+	<!--link rel="stylesheet/less" href="less/responsive.less" type="text/css" /-->
+	<!--script src="js/less-1.3.3.min.js"></script-->
+	<!--append ‘#!watch’ to the browser URL, then refresh the page. -->
+	
+	<link href="{{ static_url('rc/css/bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ static_url('rc/css/style.css') }}" rel="stylesheet">
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+  <![endif]-->
+
+  <!-- Fav and touch icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ static_url('rc/img/apple-touch-icon-144-precomposed.png') }}">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ static_url('rc/img/apple-touch-icon-114-precomposed.png') }}">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ static_url('rc/img/apple-touch-icon-72-precomposed.png') }}">
+  <link rel="apple-touch-icon-precomposed" href="{{ static_url('rc/img/apple-touch-icon-57-precomposed.png') }}">
+  <link rel="shortcut icon" href="{{ static_url('rc/img/favicon.png') }}">
+  
+	<script type="text/javascript" src="{{ static_url('rc/js/jquery.min.js') }}"></script>
+	<script type="text/javascript" src="{{ static_url('rc/js/bootstrap.min.js') }}"></script>
+	<script type="text/javascript" src="{{ static_url('rc/js/scripts.js') }}"></script>
+
+	 <script type="text/javascript">
+        //页面表单数据提交的时候
+        $(document).on('submit', '#regiform', function() {
+            form = $(this);
+            $.ajax({
+                type : 'POST',
+                url : form.attr('action'),
+                data : form.serialize(),
+                dataType : 'json',
+                cache : false,
+                success : function(result) {
+                	if (result.error == 1) {
+                        form.find('#error').html(result.msg);
+                        form.find('#error').collapse('show')
+                    } else {
+                        window.location.href = result.msg
+                    }
+                }
+            });
+            return false;
+        	});
+
+        $(document).on('submit', '#loginform', function() {
+            form = $(this);
+            $.ajax({
+                type : 'POST',
+                url : form.attr('action'),
+                data : form.serialize(),
+                dataType : 'json',
+                cache : false,
+                success : function(result) {
+                	if (result.error == 1) {
+                        $('#login').attr('data-content', result.msg)
+                        $(function () { $('#login').popover('show');});
+                    } else {
+                        window.location.href = result.msg
+                    }
+                }
+            });
+            return false;
+        	});
+
+    </script>
+</head>
+
+<body>
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">管理系统</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right" id='loginform' method="post" action="/">
+            {% raw xsrf_form_html() %}
+            <div class="form-group">
+              <input type="text" name='username' placeholder="用户名" class="form-control">
+            </div>
+            <div class="form-group">
+              <input name="password" type="password" placeholder="密码" class="form-control">
+            </div>
+            <button type="submit" id="login" class="btn btn-success popover-hide"  data-container="body" data-toggle="popover" data-placement="bottom" data-delay="1000" data-content="底部的 Popover 中的一些内容 —— destroy 方法">登录</button>
+            <a id="modal-967462" href="#modal-container-967462" role="button" class="btn btn-success" data-toggle="modal">注册</a>
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+	 
+			
+			<div class="modal fade" id="modal-container-967462" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+							<h4 class="modal-title" id="myModalLabel">
+								注册
+							</h4>
+						</div>
+						<form class="form-horizontal" role="form" id="regiform" method="post" action='/user'>
+						{% raw xsrf_form_html() %}
+
+						<div class="modal-body">
+							<div class="form-group">
+							<div id='error' class="alert alert-danger collapse col-md-6 col-md-offset-3"></div>
+							</div>
+								<div class="form-group">
+									 <label for="username" class="col-sm-3 control-label">用户名</label>
+									<div class="col-sm-8">
+										<input type="text" name="regiusername" class="form-control" id="regiusername" />
+									</div>
+								</div>
+								<div class="form-group">
+									 <label for="password" class="col-sm-3 control-label">密码</label>
+									<div class="col-sm-8">
+										<input type="password" name="regipassword" class="form-control" id="regipassword" placeholder="长度不低于6个字符"/>
+									</div>
+								</div>
+								<div class="form-group">
+									 <label for="confirm" class="col-sm-3 control-label">确认密码</label>
+									<div class="col-sm-8">
+									<input type="password" name="regiconfirm" class="form-control" id="regiconfirm" />
+									</div>
+								</div>		
+						</div>
+						<div class="modal-footer">
+							 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button> <button type="submit" class="btn btn-primary">注册</button>
+						</div>
+						</form>
+					</div>
+					
+				</div>
+				
+			</div>
+			
+			<div class="carousel slide" id="carousel-499260">
+				<ol class="carousel-indicators">
+					<li class="active" data-slide-to="0" data-target="#carousel-499260">
+					</li>
+					<li data-slide-to="1" data-target="#carousel-499260">
+					</li>
+					<li data-slide-to="2" data-target="#carousel-499260">
+					</li>
+				</ol>
+				<div class="carousel-inner">
+					<div class="item active">
+						<img alt="" src="{{ static_url('rc/img/1.jpg') }}">
+						<div class="carousel-caption">
+							<h4>
+								First Thumbnail label
+							</h4>
+							<p>
+								Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+							</p>
+						</div>
+					</div>
+					<div class="item">
+						<img alt="" src="http://lorempixel.com/1600/500/sports/2">
+						<div class="carousel-caption">
+							<h4>
+								Second Thumbnail label
+							</h4>
+							<p>
+								Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+							</p>
+						</div>
+					</div>
+					<div class="item">
+						<img alt="" src="{{ static_url('rc/img/2.png') }}">
+						<div class="carousel-caption">
+							<h4>
+								Third Thumbnail label
+							</h4>
+							<p>
+								Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+							</p>
+						</div>
+					</div>
+				</div> <a class="left carousel-control" href="#carousel-499260" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a> <a class="right carousel-control" href="#carousel-499260" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="thumbnail">
+						<img alt="300x200" src="{{ static_url('rc/img/3.png') }}">
+						<div class="caption">
+							<h3>
+								Thumbnail label
+							</h3>
+							<p>
+								Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+							</p>
+							<p>
+								<a class="btn btn-primary" href="#">Action</a> <a class="btn" href="#">Action</a>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="thumbnail">
+						<img alt="300x200" src="http://lorempixel.com/600/200/city">
+						<div class="caption">
+							<h3>
+								Thumbnail label
+							</h3>
+							<p>
+								Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+							</p>
+							<p>
+								<a class="btn btn-primary" href="#">Action</a> <a class="btn" href="#">Action</a>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="thumbnail">
+						<img alt="300x200" src="http://lorempixel.com/600/200/sports">
+						<div class="caption">
+							<h3>
+								Thumbnail label
+							</h3>
+							<p>
+								Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+							</p>
+							<p>
+								<a class="btn btn-primary" href="#">Action</a> <a class="btn" href="#">Action</a>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

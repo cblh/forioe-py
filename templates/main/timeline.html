@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% block username %}
+{{ user['name'] }}
+{% end %}
+{% block pagename %}
+时间轴
+<small>
+	<i class="icon-double-angle-right"></i>
+	 查看
+</small>
+{% end %}
+{% block content %}
+
+
+<div id="timeline-1">
+	<div class="row">
+		<div class="col-xs-12 col-sm-10 col-sm-offset-1">
+			<div class="timeline-container">
+			{% if status=='2'%}
+			{% if data %}
+				<div class="timeline-items">
+				{% for i in data%}
+					{% if i['creator'] == user['name'] %}
+					<div class="timeline-item clearfix">
+						<div class="timeline-info">
+							<span class="timeline-indicator icon-trophy btn btn-pink no-hover green"></span>
+							
+						</div>
+
+						<div class="widget-box transparent">
+							<div class="widget-header widget-header-small">
+								<h5 class="smaller">
+									你
+									<span class="grey">提交了一篇报告 <a href="/report/{{i['id']}}" class="blue">《 {{ i['title'] }} 》</a></span>
+								</h5>
+
+								<span class="widget-toolbar no-border">
+									<i class="icon-time bigger-110"></i>
+									{{ i['createtime']}}
+								</span>
+
+								<span class="widget-toolbar">
+									<a href="#" data-action="reload">
+										<i class="icon-refresh"></i>
+									</a>
+
+									<a href="#" data-action="collapse">
+										<i class="icon-chevron-up"></i>
+									</a>
+								</span>
+							</div>
+
+							<div class="widget-body">
+								<div class="widget-main"><article style="overflow:hidden"> 
+								{% raw i['content'] %}</article>
+								</div>
+							</div>
+						</div>
+					</div>
+					{% else %}
+
+					<div class="timeline-item clearfix">
+						<div class="timeline-info">
+							<span class="timeline-indicator icon-star btn btn-warning no-hover green"></span>
+						</div>
+
+						<div class="widget-box transparent">
+							<div class="widget-header widget-header-small">
+								<h5 class="smaller">
+									你
+									<span class="grey">收到了<a href="/response/{{i['id']}}" class="blue">《 {{ i['title'] }} 》的反馈 </a> </span>
+								</h5>
+
+								<span class="widget-toolbar no-border">
+									<i class="icon-time bigger-110"></i>
+									{{ i['createtime']}}
+								</span>
+
+								<span class="widget-toolbar">
+									<a href="#" data-action="reload">
+										<i class="icon-refresh"></i>
+									</a>
+
+									<a href="#" data-action="collapse">
+										<i class="icon-chevron-up"></i>
+									</a>
+								</span>
+							</div>
+
+							<div class="widget-body">
+								<div class="widget-main"><article style="overflow:hidden"> 
+									{% raw i['content'] %}</article>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+					{% end %}
+					{% end %}
+				</div><!-- /.timeline-items -->
+				{% end %}
+
+				{% else %}
+				{% if data %}
+				<div class="timeline-items">
+				{% for i in data%}
+					{% if i['creator'] != str(user['id']) %}
+					<div class="timeline-item clearfix">
+						<div class="timeline-info">
+							<span class="timeline-indicator icon-trophy btn btn-pink no-hover green"></span>
+							
+						</div>
+
+						<div class="widget-box transparent">
+							<div class="widget-header widget-header-small">
+								<h5 class="smaller">
+									<a href="#" class="blue">{{i['creator']}}</a>
+									<span class="grey">提交了一篇报告  <a href="/report/{{i['id']}}" class="blue">《 {{ i['title'] }} 》</a></span>
+								</h5>
+
+								<span class="widget-toolbar no-border">
+									<i class="icon-time bigger-110"></i>
+									{{ i['createtime']}}
+								</span>
+
+								<span class="widget-toolbar">
+									<a href="#" data-action="reload">
+										<i class="icon-refresh"></i>
+									</a>
+
+									<a href="#" data-action="collapse">
+										<i class="icon-chevron-up"></i>
+									</a>
+								</span>
+							</div>
+
+							<div class="widget-body">
+								<div class="widget-main"><article style="overflow:hidden"> 
+								{% raw i['content'] %}</article>
+								</div>
+							</div>
+						</div>
+					</div>
+					{% else %}
+
+					<div class="timeline-item clearfix">
+						<div class="timeline-info">
+							<span class="timeline-indicator icon-star btn btn-warning no-hover green"></span>
+						</div>
+
+						<div class="widget-box transparent">
+							<div class="widget-header widget-header-small">
+								<h5 class="smaller">
+									<a href="#" class="blue">{{user['name']}}</a>
+									<span class="grey">对<a href="#" class="blue">{{i['groupid']}}</a>的报告<a href="/response/{{i['id']}}" class="blue">《 {{ i['title'] }} 》作了反馈</a></span>
+								</h5>
+
+								<span class="widget-toolbar no-border">
+									<i class="icon-time bigger-110"></i>
+									{{ i['createtime']}}
+								</span>
+
+								<span class="widget-toolbar">
+									<a href="#" data-action="reload">
+										<i class="icon-refresh"></i>
+									</a>
+
+									<a href="#" data-action="collapse">
+										<i class="icon-chevron-up"></i>
+									</a>
+								</span>
+							</div>
+
+							<div class="widget-body">
+								<div class="widget-main"><article style="overflow:hidden"> 
+									{% raw i['content'] %}
+									</article>
+								</div>
+							</div>
+						</div>
+					</div>
+					{% end %}
+					{% end %}
+				</div><!-- /.timeline-items -->
+				{% end %}
+				{% end %}
+
+			</div><!-- /.timeline-container -->
+
+		</div>
+	</div>
+</div>
+
+{% end %}
